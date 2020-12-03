@@ -6,4 +6,5 @@ expand.grid(data$X1, data$X1, data$X1) %>%
   filter((first_num+second_num+third_num)==2020) %>% 
   slice(1) %>% 
   summarize(result = first_num*second_num*third_num) %>% 
-  pull()
+  pull(result)
+
