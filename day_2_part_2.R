@@ -9,6 +9,3 @@ data %>%
          check2 = str_sub(password, max_count, max_count)==character) %>% 
   filter((check1|check2)&!(check1&check2)) %>% 
   nrow()
-
-  
-  
