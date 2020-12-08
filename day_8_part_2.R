@@ -40,7 +40,7 @@ while(test){
   
   test <- tail(df$order,1)==0
   count = count+1
-  print(count)
+  #print(count)
 }
 
 df %>% 
