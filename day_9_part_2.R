@@ -6,7 +6,7 @@ preamble_length <- 25
 
 sum_n_num <- function(num_set, units, sum_check){
   if(sum_check == 0){return(TRUE)}
-  if(units<1|sum_check<0){return(FALSE)} #(preamble_length-nums_to_sum)
+  if(units<1|sum_check<0){return(FALSE)} 
   
   var = sum_n_num(num_set, units-1, sum_check - num_set[units])
   var_2 = sum_n_num(num_set, units-1, sum_check)
