@@ -3,7 +3,6 @@ library(tidyverse)
 data <-  as.numeric(read_lines("day9.txt"))
 
 preamble_length <- 25
-nums_to_sum <- 2
 
 sum_n_num <- function(num_set, units, sum_check){
   if(sum_check == 0){return(TRUE)}
