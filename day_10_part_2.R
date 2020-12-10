@@ -4,8 +4,8 @@ jolts <- as.numeric(read_lines("day10.txt"))
 
 data <- tibble(jolts = c(0,jolts,max(jolts)+3))
 
-trib_seq = tibble(count = c(1,2,3,4,5,7), 
-                  trib = c(2, 4, 7, 13, 24, 44))
+trib_seq = tibble(count = c(1, 2, 3,  4,  5,  7), 
+                  trib =  c(2, 4, 7, 13, 24, 44))
 
 perms <- 
   data %>%
