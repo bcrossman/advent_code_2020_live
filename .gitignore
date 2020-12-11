@@ -35,3 +35,4 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 day3_simple.txt
+day_11_part_2_try_faster.R
