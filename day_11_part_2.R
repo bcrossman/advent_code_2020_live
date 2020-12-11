@@ -51,7 +51,7 @@ for(i in 1:1000){
                                                       ,c("row_id", "col_id", "state")] %>% arrange(abs(.$row_id-row_id)+abs(.$col_id-col_id)) %>% pull(state)),
                                              collapse = ""), pattern = "L|#")=="#",
            down_right_diag = 
-             stri_extract_last_regex(paste0(unlist(.[(abs(.$row_id-row_id)==abs(.$col_id-col_id))&
+             stri_extract_first_regex(paste0(unlist(.[(abs(.$row_id-row_id)==abs(.$col_id-col_id))&
                                                         .$row_id>(row_id) & 
                                                         .$col_id>(col_id)
                                                       ,c("row_id", "col_id", "state")] %>% arrange(abs(.$row_id-row_id)+abs(.$col_id-col_id)) %>% pull(state)),
@@ -73,4 +73,4 @@ for(i in 1:1000){
 
 sum(seats$state_2=="#")
 
-
+View(seats %>% select(row_id, col_id, state_2) %>% pivot_wider(names_from =col_id, values_from = state_2))
