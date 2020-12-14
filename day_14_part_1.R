@@ -32,6 +32,8 @@ df1 <-
   arrange(Mem, rowid) %>% 
   group_by(Mem) %>% 
   slice(n())
+
+sum(df1$final_value) %>% scales::comma()
   
  
 
