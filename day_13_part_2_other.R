@@ -16,7 +16,7 @@ times <-
 where_are_you <- 0
 
 for(i in 2:nrow(times)){
-  # if(i==2){break}
+  if(i==2){break}
   #i <- 3
   multiple <- as.double(prod(c(1,times$value[1:(i-1)])))  #can just be LCM, but function fails. Lucky Primes
   
@@ -30,6 +30,7 @@ for(i in 2:nrow(times)){
   how_much_catchup_cycle <- multiple %% times$value[i]
     for(cycle in 1:10000){
       how_far_behind <- (how_far_behind+how_much_catchup_cycle*1) %% times$value[i]
+      print(how_far_behind)
       if(how_far_behind==0){break}
     }
   where_are_you <- multiple*cycle+where_are_you
