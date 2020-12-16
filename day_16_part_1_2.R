@@ -48,7 +48,7 @@ sum(complete_set$code)
 
 ##Part 2
 
-exclude <- complete_set$ticket
+exclude <- complete_set$code
 
 all_valid_tickets <- 
   data %>% 
@@ -106,7 +106,10 @@ for(i in 1:100){
   good_list <- bind_rows(good_list, good_positions)
 }
 
+result <- 
 good_list %>% 
   left_join(all_valid_tickets) %>% 
-  filter(starts_with(departure))
+  filter(ticket==999) %>% 
+  filter(grepl(pattern = "^departure",  x = rule)) 
 
+prod(result$code)
