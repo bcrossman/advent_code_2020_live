@@ -71,30 +71,42 @@ bad_positions <-
   ungroup() %>% 
   distinct(position, rule) %>% 
   arrange(position)
-  
-  # group_by(position) %>% 
-  # summarize(excl_rule = paste(rule, collapse = ",")) %>% 
-  # mutate(excl_rule = strsplit(excl_rule, split=","))
+
+# group_by(position) %>% 
+# summarize(excl_rule = paste(rule, collapse = ",")) %>% 
+# mutate(excl_rule = strsplit(excl_rule, split=","))
 
 good_tickets <- 
   full_join(all_valid_tickets, rules, by = character()) %>% 
-  anti_join(bad_positions)
-  left_join(bad_positions) 
-  # filter(!(rule %in% excl_rule)) %>% 
-  
-  good_tickets$good <- TRUE
-
-for(i in 1:nrow(good_tickets)){
-  i <- 1
-  good_tickets$good[i] <- !(good_tickets$rule[i] %in% good_tickets$excl_rule[[i]])
-}
-
-good_tickets_f <- 
-  good_tickets %>% 
-  filter(good) %>% 
+  anti_join(bad_positions) %>% 
   select(ticket, position, code, rule) 
 
-View(good_tickets %>%
-       ungroup() %>% 
-       count(position, rule))
+good_list <- data.frame("position"=c(), "rule"= c())
+
+
+for(i in 1:100){  
+  
+  print(i)
+  
+  good_positions <- 
+    good_tickets %>% 
+    ungroup() %>% 
+    filter(!(position %in% good_list$position)) %>%
+    filter(!(rule %in% good_list$rule)) %>% 
+    group_by(position) %>% 
+    mutate(count = n()) %>% 
+    group_by(rule) %>% 
+    mutate(count_2 = n()) %>% 
+    ungroup() %>% 
+    filter(count == min(count)) %>% 
+    filter(count_2 == max(count_2)) %>% 
+    distinct(position, rule)
+  
+  
+  good_list <- bind_rows(good_list, good_positions)
+}
+
+good_list %>% 
+  left_join(all_valid_tickets) %>% 
+  filter(starts_with(departure))
 
