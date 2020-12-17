@@ -42,7 +42,7 @@ for(i in 1:6){
             results[[paste(x,y,z,w)]] <- data.frame("X"=x,"Y"=y,"Z"=z,"W"=w)
           }
           if(current==1&(touching==(2+1)|touching==(3+1))){
-            results[[paste(x,y,z)]] <- data.frame("X"=x,"Y"=y,"Z"=z,"W"=w)
+            results[[paste(x,y,z,w)]] <- data.frame("X"=x,"Y"=y,"Z"=z,"W"=w)
           }
         }
       }
