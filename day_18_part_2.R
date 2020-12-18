@@ -9,7 +9,7 @@ evaluate <- function(x){eval(parse(text=x))}
 # data <- gsub(pattern = "*", replacement = "%*%", x = data, fixed = T)
 data <- gsub(pattern = "+", replacement = "%+%", x = data, fixed = T)
 
-sum(map_dbl(data, evaluate))
+sum(map_dbl(data, evaluate)) %>% format(scientific=FALSE)
 
 
 
