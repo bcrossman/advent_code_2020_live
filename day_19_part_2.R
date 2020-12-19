@@ -26,7 +26,7 @@ entries <-
 
 paste_na <- function(vec) {paste(vec[!is.na(vec)], collapse = "")}
 seen_start <- c()
-seen_start[1] <- NA
+seen_start[1:nrow(rules)] <- 0
 build_regex <- function(x, seen){
   # x <- NA
   
@@ -35,13 +35,16 @@ build_regex <- function(x, seen){
     return(result)
   }
   
-  if (!is.na(seen[x+1])){
-    browser()
-    return(paste_na(c(build_regex(suppressWarnings(as.numeric(rules$rule1[x+1])),seen),
-                      build_regex(suppressWarnings(as.numeric(rules$rule2[x+1])),seen),
-                      "+")))
+  if(seen[x+1]>5){
+    # browser()
+    var1 <- paste_na(c(build_regex(suppressWarnings(as.numeric(rules$rule1[x+1])),seen),
+                       build_regex(suppressWarnings(as.numeric(rules$rule2[x+1])),seen)
+    )
+    )
+    return(paste0('(', var1, "+",')'))
+    
   }
-  seen[x+1] <- T
+  seen[x+1] <- seen[x+1]+1
   
   var1 <- paste_na(c(build_regex(suppressWarnings(as.numeric(rules$rule1[x+1])),seen),
                      build_regex(suppressWarnings(as.numeric(rules$rule2[x+1])),seen)
@@ -63,5 +66,5 @@ rule_string <- gsub(pattern = "|)", replacement = ")", x = rule_string, fixed = 
 
 sum(str_detect(entries$entry, rule_string))
 
-
+str_length(rule_string)
 #between 369 and 404
