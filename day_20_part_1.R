@@ -46,7 +46,7 @@ rhs_edges <-
 
 puzzle_piece_edges <- 
   bind_rows(list(top_edges, bot_edges, lhs_edges, rhs_edges))%>% 
-  group_by(tile_no, edge, edge_direction) %>% 
+  group_by(tile_no, edge_c, edge_direction) %>% 
   summarize(entry = paste(entry, collapse = ""))
 
 puzzle_pieces_rev <- 
