@@ -107,13 +107,14 @@ puzzle <- tibble("row_id" = 1,
                  "puzzle_piece" = first_piece)
 
 rotate <- function(x) t(apply(x, 2, rev))
-flip_up_down <- function(x) rotate(rotate(rotate(t(apply(rotate(x), 1, rev)))))
-flip_left_right <- function(x) t(apply(x, 1, rev))
+flip_up_down <- function(x) x[nrow(x):1,]
+flip_left_right <- function(x) x[,ncol(x):1]
 
-max_row <- 3
-max_col <- 3
+max_row <- 12
+max_col <- 12
 
 for(row in 1:max_row){
+  # if(row==4){break}
   for(col in 1:max_col){
     if(row==max_row&col==max_col){break}
     if(col<max_col){
@@ -145,7 +146,7 @@ for(row in 1:max_row){
         complete_joins %>% 
         left_join(puzzle_pieces_list_orig, by=c("tile_no.y"="tile_no")) %>% 
         mutate(data= case_when(
-          edge_direction.y==270 ~ data,
+          edge_direction.y==270 ~ map(data, ~flip_up_down(.x)),
           edge_direction.y==180 ~ map(data, ~rotate(.x)),
           edge_direction.y==90 ~ map(data, ~rotate(rotate(.x))),
           edge_direction.y==0 ~ map(data, ~rotate(rotate(rotate(.x)))))) %>% 
@@ -160,7 +161,7 @@ for(row in 1:max_row){
       puzzle <- bind_rows(puzzle, puzzle_add)
     }
     if(col==max_col){
-      start_id = puzzle$tile_no[puzzle$row_id==row&puzzle$col_id==1]
+      start_id = puzzle$tile_no[(puzzle$row_id==row)&(puzzle$col_id==1)]
       
       start_piece = 
         puzzle %>% 
@@ -184,15 +185,17 @@ for(row in 1:max_row){
         filter(tile_no.x != tile_no.y) %>% 
         filter(!(tile_no.y %in%  puzzle$tile_no))
       
+      print(complete_joins %>% nrow())
+      
       new_piece <- 
         complete_joins %>% 
         left_join(puzzle_pieces_list_orig, by=c("tile_no.y"="tile_no")) %>% 
         mutate(data= case_when(
           edge_direction.y==0 ~ data,
-          edge_direction.y==270 ~ map(data, ~rotate(.x)),
-          edge_direction.y==180 ~ map(data, ~rotate(rotate(.x))),
-          edge_direction.y==90 ~ map(data, ~rotate(rotate(rotate(.x)))))) %>% 
-        mutate(data = ifelse(reversed.y==T, map(data, ~flip_left_right(.x)),data)) %>% 
+          edge_direction.y==270 ~ map(data, ~flip_left_right(rotate(.x))),
+          edge_direction.y==180 ~ map(data, ~flip_left_right(rotate(rotate(.x)))),
+          edge_direction.y==90 ~ map(data, ~rotate(rotate(rotate(.x)))))) %>%
+        mutate(data = ifelse(reversed.y==T, map(data, ~flip_left_right(.x)),data)) %>%
         pull(data)
       
       puzzle_add <- tibble("row_id" = row+1, 
