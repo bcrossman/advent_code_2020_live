@@ -1,6 +1,6 @@
 library(tidyverse)
 library(unglue)
-data <- readLines("day20_simple.txt")
+data <- readLines("day20.txt")
 
 data_df <- unglue_data(data, c('Tile {tile_no}:',
                                "{entry}"))
@@ -206,25 +206,97 @@ for(row in 1:max_row){
 }
 
 base <- 
-puzzle %>% 
+  puzzle %>% 
   select(-tile_no) %>% 
   pivot_wider(names_from = "col_id", values_from = "puzzle_piece") %>% 
   select(-row_id)
 
-current_col <- 
-  base[,1] %>% 
-  unnest() %>% 
-  as.data.frame()
+row_list <- list()
 
-for(i in 2:max_col){
-
-  col <- 
-    base[,i] %>% 
-    unnest()%>% 
-    as.data.frame()
-  
-  current_col <- bind_cols(current_col, col)
+for(row in 1:max_row){
+  col_list <- list()
+  for(col in 1:max_col){
+    piece <-  base[row, col] %>% pull() %>% .[[1]]
+    
+    piece_no_edges <- piece[2:9, 2:9] %>% as_tibble()
+    
+    col_list[[as.character(col)]] <- piece_no_edges
+  }
+  all_columns <- bind_cols(col_list)
+  row_list[[as.character(row)]] <- all_columns
 }
 
-current_col %>% 
-  as.matrix() 
+puzzle_final <- bind_rows(row_list)
+
+puzzle_final <- 
+  puzzle_final %>% 
+  unite("entry", sep="", remove = T) %>% 
+  mutate(entry = gsub("NA", "", entry))
+
+
+sea_monster <- readLines("sea_monster.txt")
+
+sea_monster_df <-
+  sea_monster %>% 
+  as_tibble() %>% 
+  rowid_to_column() %>% 
+  separate_rows(value, sep = "") %>% 
+  filter(value != "") %>%
+  group_by(rowid) %>% 
+  mutate(colid = row_number()) %>% 
+  pivot_wider(names_from = "colid", values_from = "value") %>% 
+  ungroup() %>% 
+  select(-rowid) %>% 
+  as.matrix()
+
+match_target <- sum(grepl(pattern = "#", x = sea_monster_df))
+monster_width <- ncol(sea_monster_df)
+monster_height <- nrow(sea_monster_df)
+
+##Create reversed, flipped, and flip reversed
+sea_monster_df_flipped <- sea_monster_df[(monster_height:1),]
+sea_monster_df_reversed <- sea_monster_df[,(monster_width:1)]
+sea_monster_df_flipped_reversed <- sea_monster_df[(monster_height:1),(monster_width:1)]
+
+#Matrix puzzle
+puzzle_matrix <- 
+  puzzle_final %>% 
+  as_tibble() %>% 
+  rowid_to_column() %>% 
+  separate_rows(entry, sep = "") %>% 
+  filter(entry != "") %>%
+  group_by(rowid) %>% 
+  mutate(colid = row_number()) %>% 
+  pivot_wider(names_from = "colid", values_from = "entry") %>% 
+  ungroup() %>% 
+  select(-rowid) %>% 
+  as.matrix()
+
+total_waves_start <- sum(grepl(pattern = "#", x = puzzle_matrix))
+
+for(monster in list(sea_monster_df, sea_monster_df_flipped, 
+                    sea_monster_df_reversed, sea_monster_df_flipped_reversed)){
+  for(i in 1:4){
+    for(j in 1:i){
+      monster <- rotate(monster)
+    }
+    monster_width <- ncol(monster)
+    monster_height <- nrow(monster)
+    monster_count <- 0
+    
+    for(row in 1:max_row){
+      for(col in 1:max_col){
+        # row <- 1
+        # col <- 1
+        monster_size_hole <- puzzle_matrix[row:(row+monster_height-1), col:(col+monster_width-1)]
+        
+        match <- sum(monster_size_hole==monster)
+        if(match==match_target){
+          monster_count = monster_count+1
+        }
+      }
+    }
+    print(monster_count)
+    print(total_waves_start - (monster_count*match_target))
+  }
+}
