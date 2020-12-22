@@ -288,8 +288,8 @@ for(monster in list(sea_monster_df, sea_monster_df_flipped,
     monster_height <- nrow(monster)
     monster_count <- 0
     
-    for(row in 1:max_row){
-      for(col in 1:max_col){
+    for(row in 1:(max_row*8-monster_height)){
+      for(col in 1:(max_col*8-monster_width)){
         # row <- 1
         # col <- 1
         monster_size_hole <- puzzle_matrix[row:(row+monster_height-1), col:(col+monster_width-1)]
@@ -300,7 +300,8 @@ for(monster in list(sea_monster_df, sea_monster_df_flipped,
         }
       }
     }
+    if(monster_count>0){
     print(monster_count)
-    print(total_waves_start - (monster_count*match_target))
+    print(total_waves_start - (monster_count*match_target))}
   }
 }
