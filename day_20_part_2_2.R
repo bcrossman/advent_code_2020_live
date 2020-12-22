@@ -53,6 +53,7 @@ create_edges <- function(raw_df){
     bind_rows(list(top_edges, bot_edges, lhs_edges, rhs_edges))%>% 
     group_by(tile_no, edge_direction) %>% 
     summarize(entry = paste(entry, collapse = "")) %>% 
+    # mutate(entry = if_else(edge_direction==270, stringi::stri_reverse(entry), entry)) %>% 
     mutate(reversed = F)
   
   return(puzzle_piece_edges)
@@ -146,10 +147,10 @@ for(row in 1:max_row){
         complete_joins %>% 
         left_join(puzzle_pieces_list_orig, by=c("tile_no.y"="tile_no")) %>% 
         mutate(data= case_when(
-          edge_direction.y==270 ~ map(data, ~flip_up_down(.x)),
+          edge_direction.y==270 ~ map(data, ~.x),
           edge_direction.y==180 ~ map(data, ~rotate(.x)),
-          edge_direction.y==90 ~ map(data, ~rotate(rotate(.x))),
-          edge_direction.y==0 ~ map(data, ~rotate(rotate(rotate(.x)))))) %>% 
+          edge_direction.y==90 ~ map(data, ~flip_left_right(.x)),
+          edge_direction.y==0 ~ map(data, ~flip_left_right(rotate(.x))))) %>% 
         mutate(data = ifelse(reversed.y==T, map(data, ~flip_up_down(.x)),data)) %>% 
         pull(data)
       
@@ -193,8 +194,8 @@ for(row in 1:max_row){
         mutate(data= case_when(
           edge_direction.y==0 ~ data,
           edge_direction.y==270 ~ map(data, ~flip_left_right(rotate(.x))),
-          edge_direction.y==180 ~ map(data, ~flip_left_right(rotate(rotate(.x)))),
-          edge_direction.y==90 ~ map(data, ~rotate(rotate(rotate(.x)))))) %>%
+          edge_direction.y==180 ~ map(data, ~flip_up_down(.x)),
+          edge_direction.y==90 ~ map(data, ~flip_left_right(flip_up_down(rotate(.x)))))) %>%
         mutate(data = ifelse(reversed.y==T, map(data, ~flip_left_right(.x)),data)) %>%
         pull(data)
       
