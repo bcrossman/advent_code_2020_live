@@ -223,14 +223,14 @@ for(row in 1:max_row){
     piece <-  base[row, col] %>% pull() %>% .[[1]]
     
     piece_no_edges <- piece[2:9, 2:9] %>% as_tibble()
-    
+    names(piece_no_edges) <- paste0("v",1:8)
     col_list[[as.character(col)]] <- piece_no_edges
   }
-  all_columns <- bind_cols(col_list)
+  all_columns <- do.call(cbind, col_list)
   row_list[[as.character(row)]] <- all_columns
 }
 
-puzzle_final <- bind_rows(row_list)
+puzzle_final <- do.call(rbind, row_list)
 
 puzzle_final <- 
   puzzle_final %>% 
@@ -300,7 +300,7 @@ for(monster in list(sea_monster_df, sea_monster_df_flipped,
         }
       }
     }
-    if(monster_count>0){
+    if(monster_count>1){
     print(monster_count)
     print(total_waves_start - (monster_count*match_target))}
   }
