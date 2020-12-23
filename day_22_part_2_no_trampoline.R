@@ -56,7 +56,7 @@ recur <- function(...) {
 }
 
 recursive_combat <- function(deck, seen){
-  if((length(deck[[1]])*length(deck[[2]]))>0){
+  while((length(deck[[1]])*length(deck[[2]]))>0){
     # deck1 <- deck[[1]]
     # deck2 <- deck[[2]]
     # browser()
@@ -85,9 +85,8 @@ recursive_combat <- function(deck, seen){
       if(((deck[[1]][1]<length(deck[[1]]))&(deck[[2]][1]<length(deck[[2]])))){
         card1 <- deck[[1]][1]
         card2 <- deck[[2]][1]
-        decks_back <- recursive_combat(list(deck[[1]][2:(1+card1)], deck[[2]][2:(1+card2)]), seen)
         
-        if(length(decks_back[[1]])>length(decks_back[[2]])){
+        if(max(deck[[1]][2:(1+card1)])>max(deck[[2]][2:(1+card2)])){
           deck[[1]] <- c(deck[[1]][-1], card1, card2)
           deck[[2]] <- c(deck[[2]][-1])
         }else{
@@ -98,9 +97,8 @@ recursive_combat <- function(deck, seen){
         recursive_combat(list(deck[[1]], deck[[2]]), seen)
       }
     }
-  }else{
-    return(list(deck[[1]], deck[[2]]))
   }
+  return(list(deck[[1]], deck[[2]]))
 }
 
 result <- recursive_combat(list(player1, player2), initial_seen)
