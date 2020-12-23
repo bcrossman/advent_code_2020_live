@@ -55,19 +55,19 @@ recur <- function(...) {
   structure(list(...), class = "recursion")
 }
 
-recursive_combat <- trampoline(function(deck, seen){
+recursive_combat <- trampoline(function(deck){
   if((length(deck[[1]])*length(deck[[2]]))>0){
     # deck1 <- deck[[1]]
     # deck2 <- deck[[2]]
     # browser()
-    current_seen <-  create_seen(deck[[1]], deck[[2]])
-    
-    if(current_seen %in% seen){
-      deck[[1]] <- c(deck[[1]], deck[[2]])
-      deck[[2]] <- c()
-      return(list(deck[[1]], deck[[2]]))}
-    
-    seen <- c(seen, current_seen)
+    # current_seen <-  create_seen(deck[[1]], deck[[2]])
+    # 
+    # if(current_seen %in% seen){
+    #   deck[[1]] <- c(deck[[1]], deck[[2]])
+    #   deck[[2]] <- c()
+    #   return(list(deck[[1]], deck[[2]]))}
+    # 
+    # seen <- c(seen, current_seen)
     if(!((deck[[1]][1]<length(deck[[1]]))&(deck[[2]][1]<length(deck[[2]])))){
       
       card1 <- deck[[1]][1]
@@ -80,12 +80,12 @@ recursive_combat <- trampoline(function(deck, seen){
         deck[[1]] <- c(deck[[1]][-1])
       }
       
-      recur(list(deck[[1]], deck[[2]]), seen)
+      recur(list(deck[[1]], deck[[2]]))
     }else{
       if(((deck[[1]][1]<length(deck[[1]]))&(deck[[2]][1]<length(deck[[2]])))){
         card1 <- deck[[1]][1]
         card2 <- deck[[2]][1]
-        decks_back <- recur(list(deck[[1]][2:(1+card1)], deck[[2]][2:(1+card2)]), seen)
+        decks_back <- recur(list(deck[[1]][2:(1+card1)], deck[[2]][2:(1+card2)]))
         
         if(length(decks_back[[1]])>length(decks_back[[2]])){
           deck[[1]] <- c(deck[[1]][-1], card1, card2)
@@ -95,7 +95,7 @@ recursive_combat <- trampoline(function(deck, seen){
           deck[[1]] <- c(deck[[1]][-1])
         }
         
-        recur(list(deck[[1]], deck[[2]]), seen)
+        recur(list(deck[[1]], deck[[2]]))
       }
     }
   }else{
@@ -103,7 +103,7 @@ recursive_combat <- trampoline(function(deck, seen){
   }
 })
 
-result <- recursive_combat(list(player1, player2), initial_seen)
+result <- recursive_combat(list(player1, player2))
 
 player1 <- result[[1]]
 player2 <- result[[2]]
