@@ -41,20 +41,6 @@ create_seen <- function(player1, player2){
 
 initial_seen <- character(0)
 
-trampoline <- function(f, ...) {
-  function(...) {
-    ret <- f(...)
-    while (inherits(ret, "recursion")) {
-      ret <- eval(as.call(c(f, unclass(ret))))
-    }
-    ret
-  }
-}
-
-recur <- function(...) {
-  structure(list(...), class = "recursion")
-}
-
 recursive_combat <- function(deck, seen){
   while((length(deck[[1]])*length(deck[[2]]))>0){
     # deck1 <- deck[[1]]
