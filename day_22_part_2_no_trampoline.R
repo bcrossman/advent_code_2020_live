@@ -55,7 +55,7 @@ recur <- function(...) {
   structure(list(...), class = "recursion")
 }
 
-recursive_combat <- trampoline(function(deck, seen){
+recursive_combat <- function(deck, seen){
   if((length(deck[[1]])*length(deck[[2]]))>0){
     # deck1 <- deck[[1]]
     # deck2 <- deck[[2]]
@@ -80,12 +80,12 @@ recursive_combat <- trampoline(function(deck, seen){
         deck[[1]] <- c(deck[[1]][-1])
       }
       
-      recur(list(deck[[1]], deck[[2]]), seen)
+      recursive_combat(list(deck[[1]], deck[[2]]), seen)
     }else{
       if(((deck[[1]][1]<length(deck[[1]]))&(deck[[2]][1]<length(deck[[2]])))){
         card1 <- deck[[1]][1]
         card2 <- deck[[2]][1]
-        decks_back <- recur(list(deck[[1]][2:(1+card1)], deck[[2]][2:(1+card2)]), seen)
+        decks_back <- recursive_combat(list(deck[[1]][2:(1+card1)], deck[[2]][2:(1+card2)]), seen)
         
         if(length(decks_back[[1]])>length(decks_back[[2]])){
           deck[[1]] <- c(deck[[1]][-1], card1, card2)
@@ -95,13 +95,13 @@ recursive_combat <- trampoline(function(deck, seen){
           deck[[1]] <- c(deck[[1]][-1])
         }
         
-        recur(list(deck[[1]], deck[[2]]), seen)
+        recursive_combat(list(deck[[1]], deck[[2]]), seen)
       }
     }
   }else{
     return(list(deck[[1]], deck[[2]]))
   }
-})
+}
 
 result <- recursive_combat(list(player1, player2), initial_seen)
 
