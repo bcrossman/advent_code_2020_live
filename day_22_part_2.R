@@ -73,11 +73,11 @@ recursive_combat <- trampoline(function(deck, seen){
       card1 <- deck[[1]][1]
       card2 <- deck[[2]][1]
       if(card1>card2){
-        deck[[1]] <- c(deck[[1]][-1], c(card1, card2))
+        deck[[1]] <- c(deck[[1]][-1], card1, card2)
         deck[[2]] <- c(deck[[2]][-1])
       }else{
+        deck[[2]] <- c(deck[[2]][-1], card2, card1)
         deck[[1]] <- c(deck[[1]][-1])
-        deck[[2]] <- c(deck[[2]][-1], c(card2, card1))
       }
       
       recur(list(deck[[1]], deck[[2]]), seen)
@@ -88,16 +88,15 @@ recursive_combat <- trampoline(function(deck, seen){
         decks_back <- recur(list(deck[[1]][2:(1+card1)], deck[[2]][2:(1+card2)]), seen)
         
         if(length(decks_back[[1]])>length(decks_back[[2]])){
-          deck[[1]] <- c(deck[[1]][-1], c(card1, card2))
+          deck[[1]] <- c(deck[[1]][-1], card1, card2)
           deck[[2]] <- c(deck[[2]][-1])
         }else{
+          deck[[2]] <- c(deck[[2]][-1], card2, card1)
           deck[[1]] <- c(deck[[1]][-1])
-          deck[[2]] <- c(deck[[2]][-1], c(card2, card1))
         }
         
         recur(list(deck[[1]], deck[[2]]), seen)
       }
-      
     }
   }else{
     return(list(deck[[1]], deck[[2]]))
